@@ -16,13 +16,22 @@ def getThreshold(init_score, test_score, q=1e-2):
 
 
 def getAffiliationMetrics(label, pred):
-    events_pred = convert_vector_to_events(pred)
-    events_label = convert_vector_to_events(label)
-    Trange = (0, len(pred))
+    # events_pred = convert_vector_to_events(pred)
+    # events_label = convert_vector_to_events(label)
+    # Trange = (0, len(pred))
 
-    result = pr_from_events(events_pred, events_label, Trange)
-    P = result['precision']
-    R = result['recall']
+    # result = pr_from_events(events_pred, events_label, Trange)
+
+    TP = np.sum((pred == 1) & (label == 1))
+    FP = np.sum((pred == 1) & (label == 0))
+    TN = np.sum((pred == 0) & (label == 0))
+    FN = np.sum((pred == 0) & (label == 1))
+
+    P = TP / (TP + FP) if (TP + FP) > 0 else 0
+    R = TP / (TP + FN) if (TP + FN) > 0 else 0
+
+    # P = result['precision']
+    # R = result['recall']
     F = 2 * P * R / (P + R)
 
     return P, R, F
